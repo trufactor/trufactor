@@ -271,16 +271,10 @@ export class Trufactor{
     }
     return indexes.map(index=> `${index}${date}`);
   }
-
-  // public getData function shadows the private internal one. It ensures that
-  // the instance is ready to make a request before firing it off
-  async getData(args){
-    await this.loaded;
-    return this.#getData(args);
-  }
-  async #getData({
+  async getData({
     query=[39.0997,-94.5786],zoom=2,filters=defaultFilters,date=this.selectedDate
   }={}){
+    await this.loaded;
     const coordinates = encodeURIComponent(query),
           queryParts = [
             `coordinates=${coordinates}`,
