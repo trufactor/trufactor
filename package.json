@@ -1,0 +1,34 @@
+{
+  "name": "@trufactor/core",
+  "version": "0.1.0",
+  "description": "Customer Demographics, Heatmap, Routes and more.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trufactor/trufactor.git"
+  },
+  "keywords": [
+    "geospatial",
+    "query",
+    "demographics",
+    "dwell",
+    "visits",
+    "routes",
+    "api",
+    "caching"
+  ],
+  "author": "TruFactor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/trufactor/trufactor/issues"
+  },
+  "homepage": "https://github.com/trufactor/trufactor#readme",
+  "dependencies": {
+    "h3-js": "^3.5.0",
+    "idb-keyval": "^3.2.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.6.0"
+  }
+}
