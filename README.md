@@ -37,6 +37,71 @@ db.getData().then(data=>{
     * **gender** filter can be: `default` (Anything), `male`, `female`
     * **ethnicity** filter can be `default` (Anything), `american indian`, `asian or pacific islander`, `black`, `hispanic`, `white`, `multiracial`
     * **income** filter can be `default` (Anything), `0to15k`, `15to25k`, `25to35k`, `35to50k`, `50to75k`, `75to100k`, `100to125k`, `125to150k`, `150to175k`, `175kplus`
+* **Trufactor.nextDate** Public method used to increment the current selected date to the next one from the available list of dates.
+* **Trufactor.previousDate** Public method used to decrement the current selected date to the previous date from the available list of dates.
+* **Trufactor.getPointsOfInterest** Public method used to perform a query to find a list of points of interests matching the provided `query` string closest to the `lat` and `lng` parameters provided.
+* **Trufactor.getSpeechToText** Public method when called listens for speech input until it receives a certain amount of silence, then fires off the recording to acquire a text version of the voice input, used to help facilitate queries or commands.
+* **Trufactor.getTextToSpeech** Public method with a `text` parameter string, when called outputs a voice that speaks the text provided. This can be helpful when the user experience is exclusively through voice instead of ui controls.
+* **Trufactor.getIntent** Public method that takes a `command` parameter string, possibly fed directly in by `getSpeechToText` that outputs an object that details the intention of the user.
+```
+// If trying to compare more than two pois at a time
+{"error": "Can only compare two pois at a time."}
+
+// If doing a poi comparison and state is missing
+{"error": "Missing state in poi comparison lookup."}
+
+// If doing a poi comparison and city is missing
+{"error": "Missing city in poi comparison lookup."}
+
+// If doing a poi comparison and poi is missing
+{"error": "Missing poi in poi comparison lookup."}
+
+// If doing a poi lookup and state is missing
+{"error": "Missing state in poi lookup."}
+
+// If doing a poi lookup and city is missing
+{"error": "Missing city in poi lookup."}
+
+// If doing a poi lookup and poi is missing
+{"error": "Missing poi in poi lookup."}
+
+// Poi comparison result, can also contain commands
+{
+  "type": "poi comparison lookup",
+  "source": {
+    "state": "missouri",
+    "city": "kansas city",
+    "poi": "city center"
+  },
+  "target": {
+    "state": "kansas",
+    "city": "lawrence",
+    "poi": "city center"
+  },
+  "commands": [
+    {"name": "reset"},
+    {"name": "show details"},
+    {"name": "pan", "direction": "westward"},
+    {"name": "zoom", "direction": "inwards", "amount": "little"}
+  ]
+}
+
+// Poi lookup result, can also contain commands
+{
+  "type": "poi lookup",
+  "state": "missouri",
+  "city": "kansas city",
+  "poi": "city center",
+  "commands": []
+}
+
+// Commands only
+{
+  "commands": [
+    {"name": "show details"}
+  ]
+}
+```
 
 ### Overridable methods
 There are some functions that are lifecycle hooks that can be leveraged to get data as its coming back to render it in partial, or merely override as the needs of the application requires.

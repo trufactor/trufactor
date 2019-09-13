@@ -52,14 +52,14 @@ export class Trufactor{
     } //end if
     this.selectedDate = this.datesAvailable[this.selectedDateIndex];
   }
-  async initLocationSearch(query){
+  async getPointsOfInterest(query){
     const queryString = Object.keys(query).map(key=>{
       return `${key}=${query[key]}`;
     }).join('&');
 
     return await fetch(`${this.domain}/poi?${queryString}`).then(res=>res.json());
   }
-  async initSpeech(){
+  async getSpeechToText(){
     const speechConfig = SpeechConfig.fromAuthorizationToken(
       this.cognitiveToken,
       'centralus'
@@ -82,7 +82,7 @@ export class Trufactor{
       );
     });
   }
-  async initSound(text=''){
+  async getTextToSpeech(text=''){
     const xmlDoc = document.implementation.createDocument('','',null),
           speakElement = xmlDoc.createElement('speak'),
           voiceElement = xmlDoc.createElement('voice');
@@ -117,8 +117,10 @@ export class Trufactor{
     }; //end onreadystatechange()
     req.send(body);
   }
-  ascribeIntent({entities=[],intents=[],query}){
-    const states = entities.filter(e=> e.role==='state'),
+  async getIntent(command=''){
+    const {entities,intents,query} = await fetch(`${domain}/luis?command=${command}`)
+            .then(res=> res.json()),
+          states = entities.filter(e=> e.role==='state'),
           cities = entities.filter(e=> e.role==='city'),
           poi = entities.filter(e=> e.role==='poi'),
           isBeingCompared = states.length===2||cities.length===2||poi.length===2,
