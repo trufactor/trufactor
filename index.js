@@ -118,7 +118,7 @@ export class Trufactor{
     req.send(body);
   }
   async getIntent(command=''){
-    const {entities,intents,query} = await fetch(`${domain}/luis?command=${command}`)
+    const {entities,intents,query} = await fetch(`${this.domain}/luis?command=${command}`)
             .then(res=> res.json()),
           states = entities.filter(e=> e.role==='state'),
           cities = entities.filter(e=> e.role==='city'),
