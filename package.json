@@ -1,6 +1,6 @@
 {
   "name": "@trufactor/core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Customer Demographics, Heatmap, Routes and more.",
   "main": "index.js",
   "scripts": {
