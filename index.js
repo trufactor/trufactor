@@ -66,6 +66,13 @@ export class Trufactor{
 
     return await fetch(`${this.domain}/address?${queryString}`).then(res=>res.json());
   }
+  async getFuzzy(query){
+    const queryString = Object.keys(query).map(key=>{
+      return `${key}=${query[key]}`;
+    }).join('&');
+
+    return await fetch(`${this.domain}/fuzzy?${queryString}`).then(res=>res.json());
+  }
   async getSpeechToText(){
     const speechConfig = SpeechConfig.fromAuthorizationToken(
       this.cognitiveToken,
