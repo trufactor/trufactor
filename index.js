@@ -120,29 +120,47 @@ export class Trufactor{
   async getIntent(command=''){
     const {entities,intents,query} = await fetch(`${this.domain}/luis?command=${command}`)
             .then(res=> res.json()),
+          addresses = entities.filter(e=> e.role==='address'),
           states = entities.filter(e=> e.role==='state'),
           cities = entities.filter(e=> e.role==='city'),
           poi = entities.filter(e=> e.role==='poi'),
           isBeingCompared = states.length===2||cities.length===2||poi.length===2,
-          isBeingLookedUp = states.length||cities.length||poi.length;
+          isBeingLookedUp = (states.length||cities.length||poi.length)&&!addresses.length;
 
     // fail-first scenarios
     if(states.length>2||cities.length>2||poi.length>2){
       return {
         error: 'Can only compare two pois at a time.'
-      }
+      };
     } //end if
-    if(isBeingCompared&&!states.length){
+    if(addresses.length>1){
+      return {
+        error: 'Can only lookup one address at a time.'
+      };
+    } //end if
+    if(addresses.length&&!states.length){
+      return {
+        error: 'Missing state in address lookup.'
+      };
+    }else if(isBeingCompared&&!states.length){
       return {
         error: 'Missing state in poi comparison lookup.'
       };
     } //end if
-    if(isBeingCompared&&!cities.length){
+    if(addresses.length&&!cities.length){
+      return {
+        error: 'Missing city in address lookup.'
+      };
+    }else if(isBeingCompared&&!cities.length){
       return {
         error: 'Missing city in poi comparison lookup.'
       };
     } //end if
-    if(isBeingCompared&&!poi.length){
+    if(addresses.length&&isBeingCompared){
+      return {
+        error: 'Invalid format for address lookup.'
+      };
+    }else if(isBeingCompared&&!poi.length){
       return {
         error: 'Missing poi in poi comparison lookup.'
       };
@@ -187,7 +205,16 @@ export class Trufactor{
         return result;
       },[]);
 
-    if(isBeingCompared){
+    if(addresses.length){
+      return {
+        type: 'address lookup',
+        address: addresses[0].entity,
+        state: states[0].entity,
+        city: cities[0].entity,
+        poi: poi.length?poi[0].entity:'', //optional in addresses
+        commands
+      };
+    }else if(isBeingCompared){
       return {
         type: 'poi comparison lookup',
         source: {
