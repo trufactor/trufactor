@@ -138,6 +138,7 @@ export class Trufactor{
           states = entities.filter(e=> e.role==='state'),
           cities = entities.filter(e=> e.role==='city'),
           poi = entities.filter(e=> e.role==='poi'),
+          fuzzy = intents.find(e=> e.intent==='list'&&e.score>0.5),
           isBeingCompared = states.length===2||cities.length===2||poi.length===2,
           isBeingLookedUp = (states.length||cities.length||poi.length)&&!addresses.length;
 
@@ -192,7 +193,12 @@ export class Trufactor{
     if(isBeingLookedUp&&!poi.length){
       return {
         error: 'Missing poi in poi lookup.'
-      }
+      };
+    } //end if
+    if(fuzzy&&!poi.length){
+      return {
+        error: 'Missing poi in fuzzy search.'
+      };
     } //end if
     const commands = intents
       .filter(e=> e.score>0.1)
@@ -219,7 +225,16 @@ export class Trufactor{
         return result;
       },[]);
 
-    if(addresses.length){
+    if(fuzzy){
+      return {
+        type: 'fuzzy search',
+        address: addresses.length?addresses[0].entity:'',
+        state: states.length?states[0].entity:'',
+        city: cities.length?cities[0].entity:'',
+        poi: poi[0].entity,
+        commands
+      };
+    }else if(addresses.length){
       return {
         type: 'address lookup',
         address: addresses[0].entity,

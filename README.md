@@ -79,6 +79,9 @@ db.getData().then(data=>{
 // If doing a poi lookup and poi is missing
 {"error": "Missing poi in poi lookup."}
 
+// If doing a fuzzy search and poi is missing
+{"error": "Missing poi in fuzzy search."}
+
 // Poi comparison result, can also contain commands
 {
   "type": "poi comparison lookup",
@@ -116,6 +119,16 @@ db.getData().then(data=>{
   "state": "missouri",
   "city": "kansas city",
   "poi": "",
+  "commands": []
+}
+
+// Fuzzy search, can also contain commands
+{
+  "type": "fuzzy search",
+  "address": "",
+  "state": "",
+  "city": "kansas city",
+  "poi": "coffee",
   "commands": []
 }
 
