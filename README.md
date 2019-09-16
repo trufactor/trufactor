@@ -40,6 +40,8 @@ db.getData().then(data=>{
 * **Trufactor.nextDate** Public method used to increment the current selected date to the next one from the available list of dates.
 * **Trufactor.previousDate** Public method used to decrement the current selected date to the previous date from the available list of dates.
 * **Trufactor.getPointsOfInterest** Public method used to perform a query to find a list of points of interests matching the provided `query` string closest to the `lat` and `lng` parameters provided.
+* **Trufactor.getAddress** Public method used to perform a query to find a list of addresses matching the provided `query` string closest to the `lat` and `lng` parameters provided.
+* **Trufactor.getFuzzy** Public method used to perform a query to find a list of points of interest, addresses or places matching the provided `query` string closest to the `lat` and `lng` parameters provided.
 * **Trufactor.getSpeechToText** Public method when called listens for speech input until it receives a certain amount of silence, then fires off the recording to acquire a text version of the voice input, used to help facilitate queries or commands.
 * **Trufactor.getTextToSpeech** Public method with a `text` parameter string, when called outputs a voice that speaks the text provided. This can be helpful when the user experience is exclusively through voice instead of ui controls.
 * **Trufactor.getIntent** Public method that takes a `command` parameter string, possibly fed directly in by `getSpeechToText` that outputs an object that details the intention of the user.
@@ -47,14 +49,26 @@ db.getData().then(data=>{
 // If trying to compare more than two pois at a time
 {"error": "Can only compare two pois at a time."}
 
+// If attempting to lookup multiple addresses at a time
+{"error": "Can only lookup one address at a time."}
+
 // If doing a poi comparison and state is missing
 {"error": "Missing state in poi comparison lookup."}
+
+// If attempting to do an address lookup without state
+{"error": "Missing state in address lookup."}
 
 // If doing a poi comparison and city is missing
 {"error": "Missing city in poi comparison lookup."}
 
+// If attempting to do an address lookup without city
+{"error": "Missing city in address lookup."}
+
 // If doing a poi comparison and poi is missing
 {"error": "Missing poi in poi comparison lookup."}
+
+// If there are multiple states, cities or pois with an address lookup
+{"error": "Invalid format for address lookup."}
 
 // If doing a poi lookup and state is missing
 {"error": "Missing state in poi lookup."}
@@ -92,6 +106,16 @@ db.getData().then(data=>{
   "state": "missouri",
   "city": "kansas city",
   "poi": "city center",
+  "commands": []
+}
+
+// Address lookup result, can also contain commands
+{
+  "type": "address lookup",
+  "address": "100 e 7th street",
+  "state": "missouri",
+  "city": "kansas city",
+  "poi": "",
   "commands": []
 }
 
