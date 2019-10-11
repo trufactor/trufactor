@@ -330,6 +330,47 @@ export class Trufactor{
     }
     return indexes.map(index=> `${index}${date}`);
   }
+  async getIndexes({indexes=[],dates=this.datesAvailable,filters=defaultFilters}={}){
+
+    // fail-first
+    if(!indexes.length||!dates.length){
+      throw new Error('Index(es) and date(s) required for getIndexes.');
+    } //end if
+    const compositeIndexes = indexes.reduce((indexes,index)=>{
+            return [
+              ...indexes,
+              ...dates.reduce((indexes,date)=>{
+                return [...indexes,`${index}${date}`];
+              },[])
+            ];
+          },[]),
+          queryParts = [
+            `age=${filters.age}`,
+            `gender=${filters.gender}`,
+            `ethnicity=${filters.ethnicity}`,
+            `income=${filters.income}`
+          ],
+          pageLength = 2;
+
+    // Call all subsequent missing data assets in parallel and allow them to come
+    // back in their own time
+    return {
+      type: 'FeatureCollection',
+      features: await Promise.all(
+        new Array(Math.ceil(compositeIndexes.length/pageLength))
+          .fill(null)
+          .map((_,i)=>{
+            const indexes = compositeIndexes
+              .slice(i*pageLength,i*pageLength+pageLength)
+              .join();
+
+            return fetch(`${this.domain}?&${queryParts.join('&')}&indexes=${indexes}`)
+              .then(res=> res.json())
+              .then(res=> res.features);
+          })
+      ).then(args=> args.flat())
+    };
+  }
   async getData({
     query=[39.0997,-94.5786],zoom=2,filters=defaultFilters,date=this.selectedDate
   }={}){
@@ -448,3 +489,5 @@ export class Trufactor{
     };
   }
 }
+
+
