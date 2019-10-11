@@ -29,6 +29,14 @@ db.getData().then(data=>{
 ### Accessible methods
 * **Trufactor.cacheData** Private method used by class to cache chunks of data at a time.
 * **Trufactor.updateProgress** Private method used by class to update the numerical progress
+* **Trufactor.getIndexes** Public method used to make calls to trufactor data access layer it will return the completed data as one chunk. This is a manual way of gathering data instead of the preferred **getData** call, allowing more granular access to specific indexes.
+  * **indexes** (Required) This required parameter is an array of indexes to gather data for.
+  * **dates** (Optional) This optional parameter is an array of dates in the format 'YYmmdd' without dashes that represents the dates for the indexes to gather data from. If this parameter is omitted it returns all available dates.
+  * **filters** (Optional) Object containing all demographic values (age,gender,ethnicity,income) with filter values of String type for each, representing demographic filter criteria.
+    * **age** filter can be: `default` (Anything), `18to25`, `26to35`, `36to45`, `46to55`, `56to65`, `66to75`, `76plus`
+    * **gender** filter can be: `default` (Anything), `male`, `female`
+    * **ethnicity** filter can be `default` (Anything), `american indian`, `asian or pacific islander`, `black`, `hispanic`, `white`, `multiracial`
+    * **income** filter can be `default` (Anything), `0to15k`, `15to25k`, `25to35k`, `35to50k`, `50to75k`, `75to100k`, `100to125k`, `125to150k`, `150to175k`, `175kplus`
 * **Trufactor.getData** Public method used to make calls to trufactor data access layer it will return the completed data as one chunk. Alternatively to waiting on the whole data payload, one may override `beforeCaching` or `afterCaching` methods to receive data partials as they return.
   * **query** (Optional) Single dimensional array of lat/long pairs. Can be point, line or polygon
   * **zoom** (Optional) Decimal value of type Number that is a normalized representation of a zoom level between 0 and 1 where 0 is completely zoomed out and 1 is completely zoomed in. As an example, in the mapbox library there are 22 levels of zoom so 22 would be 1 here.
