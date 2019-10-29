@@ -2,6 +2,7 @@ import {debounce} from './debounce';
 import {set,get} from 'idb-keyval';
 import {geoToH3,polyfill} from 'h3-js';
 import {SpeechConfig,AudioConfig,SpeechRecognizer} from 'microsoft-cognitiveservices-speech-sdk';
+import {TrufactorDemo} from './TrufactorDemo';
 
 const defaultFilters = Object.freeze({
   age: 'default',
@@ -17,6 +18,8 @@ export class Trufactor{
     this.domain = domain;
     if(!domain){
       throw new Error('Domain parameter missing in library initialization.');
+    }else if(domain==='demo'){
+      return new TrufactorDemo();
     } //end if
     this.loaded = Promise.all([
       fetch(`${this.domain}/datesAvailable`),
@@ -375,6 +378,10 @@ export class Trufactor{
     query=[39.0997,-94.5786],zoom=2,filters=defaultFilters,date=this.selectedDate
   }={}){
     await this.loaded;
+
+    // we allow attaching of synchronous functions before the intial
+    // getData call
+    if(typeof this.beforeGetData === 'function') this.beforeGetData();
     const coordinates = encodeURIComponent(query),
           queryParts = [
             `coordinates=${coordinates}`,
@@ -483,6 +490,11 @@ export class Trufactor{
             });
         })
     );
+
+    // we allow attaching of synchronous functions after the getData has been finished
+    if(typeof this.afterGetData === 'function'){
+      this.afterGetData({type: 'FeatureCollection', features});
+    } //end if
     return {
       type: 'FeatureCollection',
       features
